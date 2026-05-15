@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import axios from "axios";
 
@@ -24,7 +24,7 @@ function App() {
 
     // LOAD HISTORY
 
-    const loadHistory = async () => {
+    const loadHistory = useCallback(async () => {
 
         try {
 
@@ -53,7 +53,7 @@ function App() {
 
             console.log(error);
         }
-    };
+    }, [token]);
 
     // USE EFFECT
 
@@ -70,7 +70,7 @@ function App() {
 
         fetchData();
 
-    }, [token]);
+    }, [token, loadHistory]);
 
     // LOGIN CHECK
 
