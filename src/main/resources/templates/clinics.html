@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Clinic Management</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="logo-title">
+            RETINA AI<br>ADMIN
+        </div>
+
+        <a href="/" class="nav-link">
+            Dashboard
+        </a>
+
+        <a href="/users" class="nav-link">
+            Patients
+        </a>
+
+        <a href="/doctors" class="nav-link">
+            Doctors
+        </a>
+
+        <a href="/clinics" class="nav-link active">
+            Clinics
+        </a>
+
+        <a href="/analysis" class="nav-link">
+            AI Analysis
+        </a>
+
+        <a href="/packages" class="nav-link">
+            Packages
+        </a>
+
+        <a href="/reports" class="nav-link">
+            Reports
+        </a>
+
+        <a href="/settings" class="nav-link">
+            Settings
+        </a>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+        <!-- NAVBAR -->
+        <nav class="navbar bg-white shadow-sm p-3 rounded">
+
+            <div class="container-fluid">
+
+                <h4 class="mb-0 fw-bold">
+                    Clinic Management
+                </h4>
+
+            </div>
+
+        </nav>
+
+        <!-- CONTENT -->
+        <div class="card-box mt-4">
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h5 class="fw-bold">
+                        Clinics List
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Total Clinics:
+
+                        <span class="badge bg-primary"
+                              th:text="${#lists.size(clinics)}">
+
+                            0
+
+                        </span>
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <!-- FORM -->
+            <form action="/clinics/save"
+                  method="post"
+                  class="row g-3 mb-4">
+
+                <div class="col-md-3">
+
+                    <input type="text"
+                           name="name"
+                           class="form-control"
+                           placeholder="Clinic Name"
+                           required>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <input type="text"
+                           name="address"
+                           class="form-control"
+                           placeholder="Address"
+                           required>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <input type="text"
+                           name="phone"
+                           class="form-control"
+                           placeholder="Phone">
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-primary w-100">
+                        Add Clinic
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th width="260">
+                            Action
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <!-- EMPTY -->
+                    <tr th:if="${#lists.isEmpty(clinics)}">
+
+                        <td colspan="6"
+                            class="text-center text-muted">
+
+                            No clinics found
+
+                        </td>
+
+                    </tr>
+
+                    <!-- LOOP -->
+                    <tr th:each="clinic : ${clinics}">
+
+                        <td th:text="${clinic.id}">
+                            1
+                        </td>
+
+                        <td th:text="${clinic.name}">
+                            Retina Clinic
+                        </td>
+
+                        <td th:text="${clinic.address}">
+                            Address
+                        </td>
+
+                        <td th:text="${clinic.phone}">
+                            0123456789
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+
+                            <span class="badge bg-success"
+                                  th:if="${clinic.status == 'Approved'}">
+
+                                Approved
+
+                            </span>
+
+                            <span class="badge bg-danger"
+                                  th:if="${clinic.status == 'Suspended'}">
+
+                                Suspended
+
+                            </span>
+
+                            <span class="badge bg-warning text-dark"
+                                  th:if="${clinic.status == 'Active'}">
+
+                                Active
+
+                            </span>
+
+                        </td>
+
+                        <!-- ACTION -->
+                        <td>
+
+                            <div class="d-flex gap-2">
+
+                                <a th:href="@{/clinics/approve/{id}(id=${clinic.id})}"
+                                   class="btn btn-success btn-sm">
+
+                                    Approve
+
+                                </a>
+
+                                <a th:href="@{/clinics/suspend/{id}(id=${clinic.id})}"
+                                   class="btn btn-warning btn-sm">
+
+                                    Suspend
+
+                                </a>
+
+                                <a th:href="@{/clinics/delete/{id}(id=${clinic.id})}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this clinic?')">
+
+                                    Delete
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

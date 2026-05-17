@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Analysis</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="logo-title">
+            RETINA AI<br>ADMIN
+        </div>
+
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/users" class="nav-link">Patients</a>
+        <a href="/doctors" class="nav-link">Doctors</a>
+        <a href="/clinics" class="nav-link">Clinics</a>
+        <a href="/appointments" class="nav-link">Appointments</a>
+        <a href="/medicines" class="nav-link">Medicines</a>
+        <a href="/packages" class="nav-link">Packages</a>
+        <a href="/analysis" class="nav-link active">AI Analysis</a>
+        <a href="/reports" class="nav-link">AI Reports</a>
+        <a href="/settings" class="nav-link">Settings</a>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+
+            <h3>
+                AI Analysis Management
+            </h3>
+
+            <span>
+                AI Retina Detection System
+            </span>
+
+        </div>
+
+        <!-- MAIN CARD -->
+        <div class="card-box">
+
+            <h4 class="mb-4">
+                Upload Retina Image
+            </h4>
+
+            <div th:if="${successMessage}"
+                 class="alert alert-success"
+                 th:text="${successMessage}">
+            </div>
+
+            <div th:if="${errorMessage}"
+                 class="alert alert-danger"
+                 th:text="${errorMessage}">
+            </div>
+
+            <!-- FORM -->
+            <form action="/analysis/save"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="row g-3 mb-5">
+
+                <!-- PATIENT -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Patient Name
+                    </label>
+
+                    <input type="text"
+                           name="patientName"
+                           class="form-control"
+                           placeholder="Enter patient name"
+                           required>
+
+                </div>
+
+                <!-- IMAGE -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Retina Image
+                    </label>
+
+                    <input type="file"
+                           name="imageFile"
+                           class="form-control"
+                           accept="image/*"
+                           required>
+
+                </div>
+
+                <!-- DATE -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Analysis Date
+                    </label>
+
+                    <input type="date"
+                           name="createdDate"
+                           class="form-control">
+
+                </div>
+
+                <!-- AI NOTE -->
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        AI Note
+                    </label>
+
+                    <input type="text"
+                           name="aiResult"
+                           class="form-control"
+                           placeholder="Optional AI note">
+
+                </div>
+
+                <!-- BUTTON -->
+                <div class="col-md-12">
+
+                    <button class="btn btn-primary px-5">
+                        Run AI Analysis
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-primary">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Patient</th>
+                        <th>Bệnh</th>
+                        <th>Mức rủi ro</th>
+                        <th>Ghi chú AI</th>
+                        <!-- BUG FIX: Đổi tên cột từ "AI Recommendation" sang "AI Note" và tách cột Recommendation riêng -->
+                        <th>Khuyến nghị</th>
+                        <th>Date</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <!-- EMPTY -->
+                    <tr th:if="${#lists.isEmpty(analysisList)}">
+
+                        <td colspan="9"
+                            class="text-center text-muted">
+
+                            No analysis found
+
+                        </td>
+
+                    </tr>
+
+                    <!-- LOOP -->
+                    <tr th:each="a : ${analysisList}">
+
+                        <!-- ID -->
+                        <td th:text="${a.id}">1</td>
+
+                        <!-- IMAGE -->
+                        <td>
+                            <img th:src="${a.imageUrl}"
+                                 width="80"
+                                 class="rounded shadow-sm">
+                        </td>
+
+                        <!-- PATIENT -->
+                        <td th:text="${a.patientName}">John</td>
+
+                        <!-- DISEASE -->
+                        <td th:text="${a.disease}">Glaucoma</td>
+
+                        <!-- RISK -->
+                        <td>
+
+                            <span class="badge bg-success"
+                                  th:if="${a.riskLevel == 'Low'}">
+                                Thấp
+                            </span>
+
+                            <span class="badge bg-warning text-dark"
+                                  th:if="${a.riskLevel == 'Medium'}">
+                                Trung bình
+                            </span>
+
+                            <span class="badge bg-danger"
+                                  th:if="${a.riskLevel == 'High'}">
+                                Cao
+                            </span>
+
+                        </td>
+
+                        <!-- AI NOTE (aiResult) -->
+                        <td th:text="${a.aiResult}">AI Note</td>
+
+                        <!-- BUG FIX: Đã sửa từ a.aiResult → a.recommendation để hiển thị đúng khuyến nghị -->
+                        <!-- RECOMMENDATION -->
+                        <td th:text="${a.recommendation}">Recommendation</td>
+
+                        <!-- DATE -->
+                        <td th:text="${a.createdDate}">2026-01-01</td>
+
+                        <!-- ACTION -->
+                        <td>
+
+                            <a th:href="@{/analysis/delete/{id}(id=${a.id})}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Delete this analysis?')">
+
+                                Delete
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

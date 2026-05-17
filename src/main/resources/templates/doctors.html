@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Doctors Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR: BUG FIX - Thêm đầy đủ menu links -->
+    <div class="sidebar">
+
+        <div class="logo-title">
+            RETINA AI<br>ADMIN
+        </div>
+
+        <a href="/" class="nav-link">Dashboard</a>
+        <a href="/users" class="nav-link">Patients</a>
+        <a href="/doctors" class="nav-link active">Doctors</a>
+        <a href="/clinics" class="nav-link">Clinics</a>
+        <a href="/appointments" class="nav-link">Appointments</a>
+        <a href="/medicines" class="nav-link">Medicines</a>
+        <a href="/packages" class="nav-link">Packages</a>
+        <a href="/analysis" class="nav-link">AI Analysis</a>
+        <a href="/reports" class="nav-link">AI Reports</a>
+        <a href="/settings" class="nav-link">Settings</a>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+
+            <h3>
+                Doctors Management
+            </h3>
+
+            <span th:text="${session.admin}">Admin</span>
+
+        </div>
+
+        <!-- CARD -->
+        <div class="card-box">
+
+            <!-- HEADER -->
+            <div class="d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-3">
+
+                <div>
+
+                    <h5 class="fw-bold">
+                        Doctors List
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Total Doctors:
+
+                        <span class="badge bg-primary"
+                              th:text="${#lists.size(doctors)}">
+                            0
+                        </span>
+
+                    </small>
+
+                </div>
+
+                <!-- ADD BUTTON -->
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addDoctorModal">
+
+                    + Add Doctor
+
+                </button>
+
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-primary">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th width="220">Actions</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:if="${#lists.isEmpty(doctors)}">
+                        <td colspan="5" class="text-center text-muted">No doctors found</td>
+                    </tr>
+
+                    <tr th:each="doctor : ${doctors}">
+
+                        <td th:text="${doctor.id}"></td>
+
+                        <td th:text="${doctor.name}"></td>
+
+                        <td th:text="${doctor.email}"></td>
+
+                        <td>
+                            <span class="badge bg-success">DOCTOR</span>
+                        </td>
+
+                        <td>
+
+                            <div class="d-flex gap-2">
+
+                                <!-- EDIT -->
+                                <button class="btn btn-warning btn-sm editBtn"
+
+                                        th:attr="
+                                        data-id=${doctor.id},
+                                        data-name=${doctor.name},
+                                        data-email=${doctor.email}"
+
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editDoctorModal">
+
+                                    Edit
+
+                                </button>
+
+                                <!-- DELETE -->
+                                <a th:href="@{/doctors/delete/{id}(id=${doctor.id})}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this doctor?')">
+
+                                    Delete
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal fade"
+     id="addDoctorModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <form action="/doctors/save"
+                  method="post">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Add Doctor
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="text"
+                           name="name"
+                           class="form-control mb-3"
+                           placeholder="Doctor Name"
+                           required>
+
+                    <input type="email"
+                           name="email"
+                           class="form-control mb-3"
+                           placeholder="Doctor Email"
+                           required>
+
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Password"
+                           required>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-primary">
+                        Save Doctor
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade"
+     id="editDoctorModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <form action="/doctors/update"
+                  method="post">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Edit Doctor
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden"
+                           name="id"
+                           id="editId">
+
+                    <input type="text"
+                           name="name"
+                           id="editName"
+                           class="form-control mb-3"
+                           required>
+
+                    <input type="email"
+                           name="email"
+                           id="editEmail"
+                           class="form-control mb-3"
+                           required>
+
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="New Password (leave blank to keep)">
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-warning">
+                        Update Doctor
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    const editButtons =
+        document.querySelectorAll(".editBtn");
+
+    editButtons.forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            document.getElementById("editId").value =
+                this.dataset.id;
+
+            document.getElementById("editName").value =
+                this.dataset.name;
+
+            document.getElementById("editEmail").value =
+                this.dataset.email;
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>
