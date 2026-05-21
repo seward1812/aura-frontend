@@ -1,16 +1,55 @@
-# React + Vite
+# AURA Unified
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Du an nay gop cac goi AURA thanh mot workspace web co backend Spring Boot va frontend React.
 
-Currently, two official plugins are available:
+## Cau truc
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `src/main/java`: backend Spring Boot dung MySQL/XAMPP.
+- `frontend`: giao dien React/Vite thong nhat, tach ro Admin Console va User Workspace.
+- `database/init.sql`: tao database `aura_unified` neu can tao thu cong trong phpMyAdmin.
 
-## React Compiler
+## Chay voi XAMPP
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Mo XAMPP va bat MySQL.
+2. Vao phpMyAdmin, import `database/init.sql` hoac tao database ten `aura_unified`.
+3. Chay backend:
 
-## Expanding the ESLint configuration
+```powershell
+mvn spring-boot:run
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+4. Cach nhanh nhat: mo truc tiep giao dien tinh duoc Spring Boot phuc vu:
+
+```text
+http://localhost:8080
+```
+
+Neu may da cai Node.js/npm, ban cung co the chay frontend Vite rieng:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Sau do truy cap `http://localhost:5173`.
+
+## Tai khoan mau
+
+Backend se tu tao du lieu mau khi chay lan dau:
+
+- Admin: `admin@aura.local` / `123456`
+- Doctor: `doctor@aura.local` / `123456`
+- User: `user@aura.local` / `123456`
+
+## Cau hinh database
+
+Mac dinh backend ket noi:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/aura_unified?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Ho_Chi_Minh
+spring.datasource.username=root
+spring.datasource.password=
+```
+
+Neu XAMPP cua ban co mat khau MySQL, sua `src/main/resources/application.properties`.
